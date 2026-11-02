@@ -32,11 +32,48 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   }
 }
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Home Tutor</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
 
-<h3><?php echo $message; ?></h3>
+  <div class="auth-card">
+    <h1>Welcome back</h1>
+    <p class="subtitle">Log in to your account.</p>
 
-<form method="POST">
-  Email: <input type="email" name="email" required><br><br>
-  Password: <input type="password" name="password" required><br><br>
-  <button type="submit">Login</button>
-</form>
+    <?php if ($message != ''): ?>
+      <div class="message error">
+        <?php echo htmlspecialchars($message); ?>
+      </div>
+    <?php endif; ?>
+
+    <form method="POST" id="loginForm" novalidate>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com"
+               value="<?php echo htmlspecialchars($email ?? ''); ?>" required>
+        <small class="error-text" id="emailError"></small>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Your password" required>
+        <small class="error-text" id="passwordError"></small>
+      </div>
+
+      <button type="submit" class="btn">Log in</button>
+    </form>
+
+    <p class="switch-link">New here? <a href="register.php">Create an account</a></p>
+  </div>
+
+  <!-- Your JS goes here (create js/login.js) -->
+  <script src="../assets/js/login.js"></script>
+</body>
+</html>
