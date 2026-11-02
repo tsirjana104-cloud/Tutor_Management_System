@@ -113,6 +113,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   </div>
 
   <!-- Your JS goes here (create js/register.js) -->
-  <script src="../js/register.js"></script>
+  <script src="../assets/js/register.js"></script>
 </body>
 </html>

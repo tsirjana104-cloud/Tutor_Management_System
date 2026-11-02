@@ -149,3 +149,47 @@ select.invalid {
 .switch-link a:hover {
   text-decoration: underline;
 }
+
+/* ---------- Wider card + lists (admin pages) ---------- */
+.auth-card.wide {
+  max-width: 560px;
+}
+
+.section-title {
+  margin: 28px 0 10px;
+  padding-top: 20px;
+  font-size: 18px;
+  color: var(--blue-dark);
+  border-top: 1px solid var(--border);
+}
+
+.item-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.item-list li {
+  display: flex;
+  gap: 12px;
+  padding: 10px 12px;
+  font-size: 15px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.item-list li:nth-child(even) {
+  background: var(--blue-light);
+}
+
+.item-id {
+  min-width: 40px;
+  color: var(--muted);
+}
+
+.empty-text {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
