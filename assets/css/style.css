@@ -1,0 +1,151 @@
+/* ---------- Colours (change these to retheme everything) ---------- */
+:root {
+  --blue-dark: #1e3a8a;
+  --blue: #2563eb;
+  --blue-hover: #1d4ed8;
+  --blue-light: #eff6ff;
+  --border: #cbd5e1;
+  --text: #1e293b;
+  --muted: #64748b;
+  --error: #dc2626;
+  --success: #15803d;
+}
+
+/* ---------- Base ---------- */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 16px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text);
+  background: linear-gradient(135deg, var(--blue-light), #bfdbfe);
+}
+
+/* ---------- Card ---------- */
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  padding: 32px 28px;
+  border-radius: 10px;
+  border-top: 5px solid var(--blue);
+  box-shadow: 0 8px 24px rgba(30, 58, 138, 0.15);
+}
+
+.auth-card h1 {
+  margin: 0 0 4px;
+  font-size: 24px;
+  color: var(--blue-dark);
+}
+
+.subtitle {
+  margin: 0 0 20px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ---------- Form ---------- */
+.form-group {
+  margin-bottom: 16px;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 15px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fff;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+/* JS will add this class to a field that has a problem */
+input.invalid,
+select.invalid {
+  border-color: var(--error);
+}
+
+.error-text {
+  display: block;
+  min-height: 16px;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--error);
+}
+
+/* ---------- Button ---------- */
+.btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background: var(--blue);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: var(--blue-hover);
+}
+
+/* ---------- PHP messages ---------- */
+.message {
+  margin-bottom: 18px;
+  padding: 10px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+}
+
+.message.success {
+  color: var(--success);
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+}
+
+.message.error {
+  color: var(--error);
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+}
+
+/* ---------- Footer link ---------- */
+.switch-link {
+  margin: 20px 0 0;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.switch-link a {
+  color: var(--blue);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.switch-link a:hover {
+  text-decoration: underline;
+}
