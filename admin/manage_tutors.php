@@ -26,33 +26,74 @@ ORDER BY tp.status = 'pending' DESC, tp.id DESC");
 $stmt->execute();
 $tutors = $stmt->fetchAll();
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Tutors | Home Tutor</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
 
-<h2>Manage Tutors</h2>
+  <div class="auth-card wider">
+    <h1>Manage tutors</h1>
+    <p class="subtitle">Approve or reject tutor applications. Pending ones are listed first.</p>
 
-<table border="1" cellpadding="8">
-  <tr>
-    <th>ID</th>
-    <th>Name</th>
-    <th>Email</th>
-    <th>Phone</th>
-    <th>Status</th>
-    <th>Actions</th>
-  </tr>
-  <?php foreach ($tutors as $tutor): ?>
-    <tr>
-      <td><?php echo ($tutor['id']); ?></td>
-      <td><?php echo ($tutor['name']); ?></td>
-      <td><?php echo ($tutor['email']); ?></td>
-      <td><?php echo ($tutor['phone']); ?></td>
-      <td><?php echo ($tutor['status']); ?></td>
-      <td>
-        <?php if ($tutor['status'] == 'pending'): ?>
-          <a href="?action=approve&id=<?php echo $tutor['id']; ?>">Approve</a> |
-          <a href="?action=reject&id=<?php echo $tutor['id']; ?>">Reject</a>
-        <?php else: ?>
-          No actions available
-        <?php endif; ?>
-      </td>
-    </tr>
-    <?php endforeach; ?>
-</table>
+    <div class="toolbar">
+      <label for="statusFilter">Show</label>
+      <select id="statusFilter">
+        <option value="all">All</option>
+        <option value="pending">Pending</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+      </select>
+    </div>
+
+    <?php if (count($tutors) == 0): ?>
+      <p class="empty-text">No tutors have registered yet.</p>
+    <?php else: ?>
+      <div class="table-wrap">
+        <table class="data-table" id="tutorTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach ($tutors as $tutor): ?>
+              <tr data-status="<?php echo htmlspecialchars($tutor['status']); ?>">
+                <td><?php echo htmlspecialchars($tutor['id']); ?></td>
+                <td><?php echo htmlspecialchars($tutor['name']); ?></td>
+                <td><?php echo htmlspecialchars($tutor['email']); ?></td>
+                <td><?php echo htmlspecialchars($tutor['phone']); ?></td>
+                <td>
+                  <span class="badge <?php echo htmlspecialchars($tutor['status']); ?>">
+                    <?php echo htmlspecialchars($tutor['status']); ?>
+                  </span>
+                </td>
+                <td>
+                  <?php if ($tutor['status'] == 'pending'): ?>
+                    <a class="btn-small approve" href="?action=approve&id=<?php echo $tutor['id']; ?>">Approve</a>
+                    <a class="btn-small reject" href="?action=reject&id=<?php echo $tutor['id']; ?>">Reject</a>
+                  <?php else: ?>
+                    <span class="muted-text">No actions available</span>
+                  <?php endif; ?>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
+    <?php endif; ?>
+  </div>
+
+  <!-- Your JS goes here (create assets/js/manage_tutors.js) -->
+  <script src="../assets/js/manage_tutors.js"></script>
+</body>
+</html>
