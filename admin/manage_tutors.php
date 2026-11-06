@@ -33,9 +33,13 @@ $tutors = $stmt->fetchAll();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Manage Tutors | Home Tutor</title>
   <link rel="stylesheet" href="../assets/css/style.css">
+     <link rel="stylesheet" href="../assets/css/style.css?v=2">
 </head>
-<body>
+<body class="dashboard-page">
 
+  <?php $activePage = 'tutors'; include '../includes/admin_navbar.php'; ?>
+
+  <main class="page-center">
   <div class="auth-card wider">
     <h1>Manage tutors</h1>
     <p class="subtitle">Approve or reject tutor applications. Pending ones are listed first.</p>
@@ -92,6 +96,7 @@ $tutors = $stmt->fetchAll();
       </div>
     <?php endif; ?>
   </div>
+  </main>
 
   <!-- Your JS goes here (create assets/js/manage_tutors.js) -->
   <script src="../assets/js/manage_tutors.js"></script>

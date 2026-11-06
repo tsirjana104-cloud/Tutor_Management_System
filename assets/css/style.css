@@ -434,3 +434,252 @@ textarea.invalid {
 .filter-form .filter-buttons .btn-outline {
   display: inline-block;
 }
+
+/* =====================================================
+   DASHBOARD LAYOUT (used by admin, tutor, student)
+   ===================================================== */
+body.dashboard-page {
+  display: block;
+  padding: 0;
+  min-height: 100vh;
+  background: var(--blue-light);
+}
+
+/* ---------- Top bar ---------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 12px 24px;
+  color: #fff;
+  background: var(--blue-dark);
+}
+
+.brand {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.brand span {
+  margin-left: 6px;
+  padding: 2px 8px;
+  font-size: 12px;
+  background: var(--blue);
+  border-radius: 10px;
+}
+
+.topbar-links {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+}
+
+.topbar-links a {
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #dbeafe;
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+.topbar-links a:hover,
+.topbar-links a.active {
+  color: #fff;
+  background: var(--blue);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-name {
+  font-size: 14px;
+}
+
+.logout-link {
+  padding: 6px 12px;
+  font-size: 13px;
+  color: #fff;
+  text-decoration: none;
+  border: 1px solid #93c5fd;
+  border-radius: 6px;
+}
+
+.logout-link:hover {
+  background: var(--blue);
+}
+
+/* ---------- Notification bell ---------- */
+.bell {
+  position: relative;
+}
+
+.bell summary {
+  position: relative;
+  display: flex;
+  align-items: center;
+  list-style: none;
+  cursor: pointer;
+  color: #fff;
+}
+
+.bell summary::-webkit-details-marker {
+  display: none;
+}
+
+.bell-count {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  min-width: 18px;
+  padding: 1px 5px;
+  font-size: 11px;
+  font-weight: bold;
+  text-align: center;
+  color: #fff;
+  background: var(--error);
+  border-radius: 10px;
+}
+
+.bell-panel {
+  position: absolute;
+  top: 36px;
+  right: -8px;
+  z-index: 10;
+  width: 300px;
+  color: var(--text);
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(30, 58, 138, 0.25);
+}
+
+.bell-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  font-size: 14px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.bell-header a {
+  font-size: 12px;
+  color: var(--blue);
+  text-decoration: none;
+}
+
+.bell-header a:hover {
+  text-decoration: underline;
+}
+
+.bell-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bell-list li {
+  padding: 10px 14px;
+  font-size: 13px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.bell-list li.unread {
+  font-weight: bold;
+  background: var(--blue-light);
+}
+
+.bell-empty {
+  margin: 0;
+  padding: 16px 14px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ---------- Content area ---------- */
+.dashboard-content {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+.dashboard-content h1 {
+  margin: 0 0 4px;
+  font-size: 26px;
+  color: var(--blue-dark);
+}
+
+/* ---------- Stat cards ---------- */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.stat-card {
+  display: block;
+  padding: 20px;
+  color: var(--text);
+  text-decoration: none;
+  background: #fff;
+  border-top: 4px solid var(--blue);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.1);
+}
+
+a.stat-card:hover {
+  box-shadow: 0 6px 16px rgba(30, 58, 138, 0.2);
+}
+
+.stat-card.highlight {
+  border-top-color: var(--error);
+}
+
+.stat-number {
+  display: block;
+  font-size: 32px;
+  font-weight: bold;
+  color: var(--blue-dark);
+}
+
+.stat-label {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 700px) {
+  .topbar {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .topbar-links {
+    order: 3;
+    flex-basis: 100%;
+    flex-wrap: wrap;
+  }
+
+  .topbar-right {
+    margin-left: auto;
+  }
+
+  .user-name {
+    display: none;
+  }
+}
+
+/* ---------- Centers a card below the top bar (admin sub-pages) ---------- */
+.page-center {
+  display: flex;
+  justify-content: center;
+  padding: 32px 16px;
+}

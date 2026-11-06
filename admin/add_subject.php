@@ -1,5 +1,7 @@
 <?php
 require_once '../includes/config.php';
+require_once '../includes/auth_check.php';
+requireRole('admin'); // Only allow admins to access this page
 
 $message = '';
 $messageType = ''; // "success" or "error"
@@ -39,9 +41,13 @@ $subjects = $stmt->fetchAll();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Add Subject | Home Tutor</title>
   <link rel="stylesheet" href="../assets/css/style.css">
+     <link rel="stylesheet" href="../assets/css/style.css?v=2">
 </head>
-<body>
+<body class="dashboard-page">
 
+  <?php $activePage = 'subjects'; include '../includes/admin_navbar.php'; ?>
+
+  <main class="page-center">
   <div class="auth-card wide">
     <h1>Add subject</h1>
     <p class="subtitle">Subjects added here can be chosen by tutors and students.</p>
@@ -78,6 +84,7 @@ $subjects = $stmt->fetchAll();
       </ul>
     <?php endif; ?>
   </div>
+  </main>
 
   <!-- Your JS goes here (create assets/js/add_subject.js) -->
   <script src="../assets/js/add_subject.js"></script>

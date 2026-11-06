@@ -1,5 +1,6 @@
 <?php
 require_once '../includes/config.php';
+require_once '../includes/notify_helper.php';
 
 $message = '';
 $messageType = ''; // "success" or "error" (used for the message box colour)
@@ -34,6 +35,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($role == 'tutor') {
       $tutorStmt = $conn->prepare("INSERT INTO tutor_profiles (user_id) VALUES (?)");
       $tutorStmt->execute([$userId]);
+
+      // Notify every admin that a new tutor is waiting for approval
+      $adminStmt = $conn->query("SELECT id FROM users WHERE role = 'admin'");
+      foreach ($adminStmt->fetchAll() as $admin) {
+        createNotification($conn, $admin['id'], "New tutor registered: " . $name . " is waiting for approval.");
+      }
     }
 
     $message = "Registration successful! Your User ID is: " . $userId;
@@ -112,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <p class="switch-link">Already have an account? <a href="login.php">Log in</a></p>
   </div>
 
-  <!-- Your JS goes here (create js/register.js) -->
+  <!-- Your JS goes here (create assets/js/register.js) -->
   <script src="../assets/js/register.js"></script>
 </body>
 </html>
