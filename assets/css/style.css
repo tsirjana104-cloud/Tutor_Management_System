@@ -381,3 +381,56 @@ textarea.invalid {
 .item-name {
   flex: 1;
 }
+
+/* ---------- Widest card, booking statuses, wrapping cells ---------- */
+.auth-card.widest {
+  max-width: 1100px;
+}
+
+.badge.accepted {
+  color: var(--success);
+  background: #dcfce7;
+}
+
+.badge.completed {
+  color: var(--blue-dark);
+  background: #dbeafe;
+}
+
+.data-table td.cell-wrap {
+  min-width: 180px;
+  max-width: 260px;
+  white-space: normal;
+}
+
+/* ---------- Search / filter row ---------- */
+.filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 14px;
+}
+
+.filter-form .form-group {
+  flex: 1;
+  min-width: 160px;
+  margin-bottom: 0;
+}
+
+.filter-form .filter-buttons {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 10px;
+}
+
+.filter-form .filter-buttons .btn,
+.filter-form .filter-buttons .btn-outline {
+  width: auto;
+  margin-top: 0;
+  padding: 10px 20px;
+  font-size: 15px;
+}
+
+.filter-form .filter-buttons .btn-outline {
+  display: inline-block;
+}

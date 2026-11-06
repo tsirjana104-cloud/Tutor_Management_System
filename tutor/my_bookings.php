@@ -52,44 +52,83 @@ ORDER BY br.status = 'pending' DESC, br.preferred_date ASC");
 $bookingStmt->execute([$tutorProfile]);
 $bookings = $bookingStmt->fetchAll();
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Bookings | Home Tutor</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
 
+  <div class="auth-card widest">
+    <h1>My booking requests</h1>
+    <p class="subtitle">Accept or reject requests from students. Pending ones are listed first.</p>
 
-<h2>My Booking Requests</h2>
+    <?php if (count($bookings) === 0): ?>
+      <p class="empty-text">No booking requests found.</p>
+    <?php else: ?>
 
-<?php if (count($bookings) === 0): ?>
-    <p>No booking requests found.</p>
-<?php else: ?>
-  <table border="1" cellpadding="8">
-    <tr>
-      <th>Student Name</th>
-      <th>Phone</th>
-      <th>Subject</th>
-      <th>Preferred Date</th>
-      <th>Preferred Time</th>
-      <th>Message</th>
-      <th>Status</th>
-      <th>Actions</th>
-    </tr>
-    <?php foreach ($bookings as $booking): ?>
-      <tr>
-        <td><?php echo htmlspecialchars($booking['student_name']); ?></td>
-        <td><?php echo htmlspecialchars($booking['student_phone']); ?></td>
-        <td><?php echo htmlspecialchars($booking['subject_name']); ?></td>
-        <td><?php echo $booking['preferred_date']; ?></td>
-        <td><?php echo $booking['preferred_time']; ?></td>
-        <td><?php echo htmlspecialchars($booking['message']); ?></td>
-        <td><?php echo $booking['status']; ?></td>
-        <td>
-          <?php if ($booking['status'] === 'pending'): ?>
-            <a href="?action=accept&booking_id=<?php echo $booking['id']; ?>">Accept</a> | 
-            <a href="?action=reject&booking_id=<?php echo $booking['id']; ?>">Reject</a>
-          <?php elseif ($booking['status'] === 'accepted'): ?>
-            <a href="?action=complete&booking_id=<?php echo $booking['id']; ?>">Mark as Completed</a>
-          <?php else: ?>
-            N/A
-          <?php endif; ?>
-        </td>
-      </tr>
-      <?php endforeach; ?>
-  </table>
-<?php endif; ?>
+      <div class="toolbar">
+        <label for="statusFilter">Show</label>
+        <select id="statusFilter">
+          <option value="all">All</option>
+          <option value="pending">Pending</option>
+          <option value="accepted">Accepted</option>
+          <option value="completed">Completed</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table" id="bookingTable">
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Phone</th>
+              <th>Subject</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Message</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach ($bookings as $booking): ?>
+              <tr data-status="<?php echo htmlspecialchars($booking['status']); ?>">
+                <td><?php echo htmlspecialchars($booking['student_name']); ?></td>
+                <td><?php echo htmlspecialchars($booking['student_phone']); ?></td>
+                <td><?php echo htmlspecialchars($booking['subject_name']); ?></td>
+                <td><?php echo htmlspecialchars($booking['preferred_date']); ?></td>
+                <td><?php echo htmlspecialchars($booking['preferred_time']); ?></td>
+                <td class="cell-wrap"><?php echo htmlspecialchars($booking['message']); ?></td>
+                <td>
+                  <span class="badge <?php echo htmlspecialchars($booking['status']); ?>">
+                    <?php echo htmlspecialchars($booking['status']); ?>
+                  </span>
+                </td>
+                <td>
+                  <?php if ($booking['status'] === 'pending'): ?>
+                    <a class="btn-small approve" href="?action=accept&booking_id=<?php echo $booking['id']; ?>">Accept</a>
+                    <a class="btn-small reject" href="?action=reject&booking_id=<?php echo $booking['id']; ?>">Reject</a>
+                  <?php elseif ($booking['status'] === 'accepted'): ?>
+                    <a class="btn-small approve" href="?action=complete&booking_id=<?php echo $booking['id']; ?>">Mark as completed</a>
+                  <?php else: ?>
+                    <span class="muted-text">N/A</span>
+                  <?php endif; ?>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
+
+    <?php endif; ?>
+  </div>
+
+  <!-- Your JS goes here (create assets/js/my_bookings.js) -->
+  <script src="../assets/js/my_bookings.js"></script>
+</body>
+</html>

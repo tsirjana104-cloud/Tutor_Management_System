@@ -33,50 +33,82 @@ $tutors = $stmt->fetchAll();
 // For the filter dropdown
 $allSubjects = $conn->query("SELECT * FROM subjects ORDER BY name")->fetchAll();
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Tutors | Home Tutor</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
 
-<h2>Search Tutors</h2>
+  <div class="auth-card wider">
+    <h1>Search tutors</h1>
+    <p class="subtitle">Find an approved tutor by subject or location.</p>
 
-<form method="GET">
-  Subject:
-  <select name="subject_id">
-    <option value="">-- All Subjects --</option>
-    <?php foreach ($allSubjects as $subject): ?>
-      <option value="<?php echo $subject['id']; ?>" <?php echo ($subjectFilter == $subject['id']) ? 'selected' : ''; ?>>
-        <?php echo ($subject['name']); ?>
+    <form method="GET" id="searchForm" class="filter-form">
+      <div class="form-group">
+        <label for="subject_id">Subject</label>
+        <select id="subject_id" name="subject_id">
+          <option value="">-- All Subjects --</option>
+          <?php foreach ($allSubjects as $subject): ?>
+            <option value="<?php echo $subject['id']; ?>" <?php echo ($subjectFilter == $subject['id']) ? 'selected' : ''; ?>>
+              <?php echo htmlspecialchars($subject['name']); ?>
+            </option>
+          <?php endforeach; ?>
+        </select>
+      </div>
 
-      </option>
-    <?php endforeach; ?>
-  </select>
+      <div class="form-group">
+        <label for="location">Location</label>
+        <input type="text" id="location" name="location" placeholder="e.g. KTM"
+               value="<?php echo htmlspecialchars($locationFilter); ?>">
+      </div>
 
-  Location:
-  <input type="text" name="location" value="<?php echo htmlspecialchars($locationFilter); ?>" placeholder="e.g. KTM">
+      <div class="form-group filter-buttons">
+        <button type="submit" class="btn">Search</button>
+        <a href="search_tutors.php" class="btn-outline" id="clearFilters">Clear</a>
+      </div>
+    </form>
 
-  <button type="submit">Search</button>
-</form>
+    <h2 class="section-title">Results (<?php echo count($tutors); ?>)</h2>
 
-<hr>
+    <?php if (count($tutors) == 0): ?>
+      <p class="empty-text">No tutors found matching your criteria.</p>
+    <?php else: ?>
+      <div class="table-wrap">
+        <table class="data-table" id="tutorTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Location</th>
+              <th>Qualification</th>
+              <th>Experience (years)</th>
+              <th>Hourly rate</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach ($tutors as $tutor): ?>
+              <tr>
+                <td><?php echo htmlspecialchars($tutor['name']); ?></td>
+                <td><?php echo htmlspecialchars($tutor['location']); ?></td>
+                <td><?php echo htmlspecialchars($tutor['qualification']); ?></td>
+                <td><?php echo htmlspecialchars($tutor['experience_years']); ?></td>
+                <td>Rs. <?php echo htmlspecialchars($tutor['hourly_rate']); ?></td>
+                <td>
+                  <a class="btn-small approve" href="book_tutor.php?tutor_id=<?php echo $tutor['tutor_profile_id']; ?>">Book</a>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
+    <?php endif; ?>
+  </div>
 
-<?php if (count($tutors) == 0): ?>
-  <p>No tutors found matching your criteria.</p>
-<?php else: ?>
-  <table border="1" cellpadding="8">
-    <tr>
-      <th>Name</th>
-      <th>Location</th>
-      <th>Qualification</th>
-      <th>Experience (years)</th>
-      <th>Hourly Rate (Rs.)</th>
-      <th>Actions</th>
-    </tr>
-    <?php foreach ($tutors as $tutor): ?>
-      <tr>
-        <td><?php echo htmlspecialchars($tutor['name']); ?></td>
-        <td><?php echo htmlspecialchars($tutor['location']); ?></td>
-        <td><?php echo htmlspecialchars($tutor['qualification']); ?></td>
-        <td><?php echo $tutor['experience_years']; ?></td>
-        <td>Rs. <?php echo $tutor['hourly_rate']; ?></td>
-        <td><a href="book_tutor.php?tutor_id=<?php echo $tutor['tutor_profile_id']; ?>">Book</a></td>
-      </tr>
-      <?php endforeach; ?>
-  </table>
-<?php endif; ?>
+  <!-- Your JS goes here (create assets/js/search_tutors.js) -->
+  <script src="../assets/js/search_tutors.js"></script>
+</body>
+</html>
