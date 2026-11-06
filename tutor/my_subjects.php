@@ -42,30 +42,57 @@ $myStmt = $conn->prepare("SELECT ts.id as tutor_subject_id, s.name FROM tutor_su
 $myStmt->execute([$tutorId]);
 $mySubjects = $myStmt->fetchAll();
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Subjects | Home Tutor</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
 
-<h2>My Subjects</h2>
+  <div class="auth-card wide">
+    <h1>My subjects</h1>
+    <p class="subtitle">Choose the subjects you teach.</p>
 
-<form method="POST">
-  <select name="subject_id" required>
-    <option value="">-- Select Subject --</option>
-    <?php foreach ($allSubjects as $subject): ?>
-      <option value="<?php echo $subject['id']; ?>"><?php echo htmlspecialchars($subject['name']); ?></option>
-    <?php endforeach; ?>
-    </select>
-    <button type="submit" name="add_subject">Add Subject</button>
-  </form>
+    <form method="POST" id="mySubjectForm" novalidate>
+      <div class="form-group">
+        <label for="subject_id">Add a subject</label>
+        <div class="inline-form">
+          <select id="subject_id" name="subject_id" required>
+            <option value="">-- Select Subject --</option>
+            <?php foreach ($allSubjects as $subject): ?>
+              <option value="<?php echo $subject['id']; ?>"><?php echo htmlspecialchars($subject['name']); ?></option>
+            <?php endforeach; ?>
+          </select>
+          <button type="submit" name="add_subject" class="btn">Add</button>
+        </div>
+        <small class="error-text" id="subjectError"></small>
+      </div>
+    </form>
 
-  <hr>
+    <h2 class="section-title">Subjects I currently teach (<?php echo count($mySubjects); ?>)</h2>
 
-  <h3>Subjects I Currently Teach</h3>
-  <ul>
-    <?php foreach ($mySubjects as $subject): ?>
-      <li>
-        <?php echo htmlspecialchars($subject['name']); ?>
-        (<a href="?remove=<?php echo $subject['tutor_subject_id']; ?>" onclick="return confirm('Are you sure you want to remove this subject?');">Remove</a>)
-      </li>
-    <?php endforeach; ?>
-  </ul>
+    <?php if (count($mySubjects) == 0): ?>
+      <p class="empty-text">You haven't added any subjects yet.</p>
+    <?php else: ?>
+      <ul class="item-list" id="mySubjectList">
+        <?php foreach ($mySubjects as $subject): ?>
+          <li>
+            <span class="item-name"><?php echo htmlspecialchars($subject['name']); ?></span>
+            <a class="btn-small reject remove-link"
+               href="?remove=<?php echo $subject['tutor_subject_id']; ?>"
+               onclick="return confirm('Are you sure you want to remove this subject?');">Remove</a>
+          </li>
+        <?php endforeach; ?>
+      </ul>
+    <?php endif; ?>
 
-  <br>
-  <a href="profile.php">Back to Profile</a>
+    <a class="btn-outline" href="profile.php">Back to profile</a>
+  </div>
+
+  <!-- Your JS goes here (create assets/js/my_subjects.js) -->
+  <script src="../assets/js/my_subjects.js"></script>
+</body>
+</html>
