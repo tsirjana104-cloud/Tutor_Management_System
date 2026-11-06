@@ -51,9 +51,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Give Review | Home Tutor</title>
   <link rel="stylesheet" href="../assets/css/style.css">
-</head>
-<body>
+     <link rel="stylesheet" href="../assets/css/style.css?v=2">
 
+</head>
+<body class="dashboard-page">
+
+  <?php $activePage = 'bookings'; include '../includes/student_navbar.php'; ?>
+
+  <main class="page-center">
   <div class="auth-card wide">
     <h1>Review <?php echo htmlspecialchars($booking['tutor_name']); ?></h1>
     <p class="subtitle">Tell other students how your lesson went.</p>
@@ -93,6 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <a class="btn-outline" href="my_bookings.php">Back to my bookings</a>
   </div>
+  </main>
 
   <!-- Your JS goes here (create assets/js/give_review.js) -->
   <script src="../assets/js/give_review.js"></script>

@@ -62,9 +62,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Book Tutor | Home Tutor</title>
   <link rel="stylesheet" href="../assets/css/style.css">
+     <link rel="stylesheet" href="../assets/css/style.css?v=2">
 </head>
-<body>
+<body class="dashboard-page">
 
+  <?php $activePage = 'search'; include '../includes/student_navbar.php'; ?>
+
+  <main class="page-center">
   <div class="auth-card wide">
     <h1>Book <?php echo htmlspecialchars($tutor['name']); ?></h1>
     <p class="subtitle">Send a booking request. The tutor will accept or reject it.</p>
@@ -126,6 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <a class="btn-outline" href="search_tutors.php">Back to search</a>
   </div>
+  </main>
 
   <!-- Your JS goes here (create assets/js/book_tutor.js) -->
   <script src="../assets/js/book_tutor.js"></script>

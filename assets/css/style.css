@@ -717,3 +717,15 @@ a.stat-card:hover {
 .panel-link a:hover {
   text-decoration: underline;
 }
+
+/* ---------- Info message (blue) ---------- */
+.message.info {
+  color: var(--blue-dark);
+  background: #eff6ff;
+  border: 1px solid #93c5fd;
+}
+
+.message.info a {
+  color: var(--blue-dark);
+  font-weight: bold;
+}

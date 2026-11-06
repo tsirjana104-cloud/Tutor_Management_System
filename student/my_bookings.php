@@ -23,9 +23,13 @@ $bookings = $stmt->fetchAll();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Bookings | Home Tutor</title>
   <link rel="stylesheet" href="../assets/css/style.css">
+     <link rel="stylesheet" href="../assets/css/style.css?v=2">
 </head>
-<body>
+<body class="dashboard-page">
 
+  <?php $activePage = 'bookings'; include '../includes/student_navbar.php'; ?>
+
+  <main class="page-center">
   <div class="auth-card wider">
     <h1>My bookings</h1>
     <p class="subtitle">Track your booking requests and review completed lessons.</p>
@@ -87,6 +91,7 @@ $bookings = $stmt->fetchAll();
 
     <?php endif; ?>
   </div>
+  </main>
 
   <!-- Your JS goes here (create assets/js/student_bookings.js) -->
   <script src="../assets/js/student_bookings.js"></script>

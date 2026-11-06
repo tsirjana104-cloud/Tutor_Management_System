@@ -40,9 +40,13 @@ $allSubjects = $conn->query("SELECT * FROM subjects ORDER BY name")->fetchAll();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Search Tutors | Home Tutor</title>
   <link rel="stylesheet" href="../assets/css/style.css">
+     <link rel="stylesheet" href="../assets/css/style.css?v=2">
 </head>
-<body>
+<body class="dashboard-page">
 
+  <?php $activePage = 'search'; include '../includes/student_navbar.php'; ?>
+
+  <main class="page-center">
   <div class="auth-card wider">
     <h1>Search tutors</h1>
     <p class="subtitle">Find an approved tutor by subject or location.</p>
@@ -107,6 +111,7 @@ $allSubjects = $conn->query("SELECT * FROM subjects ORDER BY name")->fetchAll();
       </div>
     <?php endif; ?>
   </div>
+  </main>
 
   <!-- Your JS goes here (create assets/js/search_tutors.js) -->
   <script src="../assets/js/search_tutors.js"></script>
