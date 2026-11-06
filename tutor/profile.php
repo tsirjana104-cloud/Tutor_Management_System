@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $experience = trim($_POST['experience_years']);
   $rate = $_POST['hourly_rate'];
 
-  $updateStmt = $conn->prepare("UPDATE tutor_profiles SET bio = ?, qualification = ?, experience_years = ?, hourly_rate = ? WHERE user_id = ?");
+  $updateStmt = $conn->prepare("UPDATE tutor_profiles SET bio = ?, qualification = ?, experience_years =  ?, hourly_rate = ? WHERE user_id = ?");
   $updateStmt->execute([$bio, $qualification, $experience, $rate, $userId]);
 
   $message = "Profile updated successfully!";
@@ -28,26 +28,70 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $tutor = $stmt->fetch();
 }
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile | Home Tutor</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
 
-<h2>My Profile</h2>
-<p>Status: <strong><?php echo $tutor['status']; ?></strong></p>
-<h3><?php echo $message; ?></h3>
+  <div class="auth-card wide">
+    <h1>My profile</h1>
+    <p class="subtitle">
+      Status:
+      <span class="badge <?php echo htmlspecialchars($tutor['status'] ?? ''); ?>">
+        <?php echo htmlspecialchars($tutor['status'] ?? ''); ?>
+      </span>
+    </p>
 
-<form method="POST">
-  Bio:<br>
-  <textarea name="bio"><?php echo htmlspecialchars($tutor['bio']); ?></textarea><br><br>
+    <?php if ($message != ''): ?>
+      <div class="message success">
+        <?php echo htmlspecialchars($message); ?>
+      </div>
+    <?php endif; ?>
 
-  Qualification:<br>
-  <input type="text" name="qualification" value="<?php echo htmlspecialchars($tutor['qualification']); ?>"><br><br>
+    <form method="POST" id="profileForm" novalidate>
 
-  Experience (years):<br>
-  <input type="number" name="experience_years" value="<?php echo htmlspecialchars($tutor['experience_years']); ?>"><br><br>
+      <div class="form-group">
+        <label for="bio">Bio</label>
+        <textarea id="bio" name="bio" rows="4"
+                  placeholder="Tell students a little about yourself and how you teach"><?php echo htmlspecialchars($tutor['bio'] ?? ''); ?></textarea>
+        <small class="error-text" id="bioError"></small>
+      </div>
 
-  Hourly Rate (Rs.):<br>
-  <input type="number" name="hourly_rate" value="<?php echo htmlspecialchars($tutor['hourly_rate']); ?>"><br><br>
+      <div class="form-group">
+        <label for="qualification">Qualification</label>
+        <input type="text" id="qualification" name="qualification" placeholder="e.g. BSc Mathematics"
+               value="<?php echo htmlspecialchars($tutor['qualification'] ?? ''); ?>">
+        <small class="error-text" id="qualificationError"></small>
+      </div>
 
-  <button type="submit">Save Profile</button>
-</form>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="experience_years">Experience (years)</label>
+          <input type="number" id="experience_years" name="experience_years" min="0" placeholder="0"
+                 value="<?php echo htmlspecialchars($tutor['experience_years'] ?? ''); ?>">
+          <small class="error-text" id="experienceError"></small>
+        </div>
 
-<br>
-<a href="my_subjects.php">Manage Subjects I teach</a>
+        <div class="form-group">
+          <label for="hourly_rate">Hourly rate (Rs.)</label>
+          <input type="number" id="hourly_rate" name="hourly_rate" min="0" placeholder="500"
+                 value="<?php echo htmlspecialchars($tutor['hourly_rate'] ?? ''); ?>">
+          <small class="error-text" id="rateError"></small>
+        </div>
+      </div>
+
+      <button type="submit" class="btn">Save profile</button>
+    </form>
+
+    <a class="btn-outline" href="my_subjects.php">Manage subjects I teach</a>
+  </div>
+
+  <!-- Your JS goes here (create assets/js/profile.js) -->
+  <script src="../assets/js/profile.js"></script>
+</body>
+</html>
