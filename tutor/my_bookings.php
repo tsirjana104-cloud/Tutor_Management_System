@@ -59,9 +59,13 @@ $bookings = $bookingStmt->fetchAll();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Bookings | Home Tutor</title>
   <link rel="stylesheet" href="../assets/css/style.css">
+     <link rel="stylesheet" href="../assets/css/style.css?v=2">
 </head>
-<body>
+<body class="dashboard-page">
 
+  <?php $activePage = 'bookings'; include '../includes/tutor_navbar.php'; ?>
+
+  <main class="page-center">
   <div class="auth-card widest">
     <h1>My booking requests</h1>
     <p class="subtitle">Accept or reject requests from students. Pending ones are listed first.</p>
@@ -127,6 +131,7 @@ $bookings = $bookingStmt->fetchAll();
 
     <?php endif; ?>
   </div>
+  </main>
 
   <!-- Your JS goes here (create assets/js/my_bookings.js) -->
   <script src="../assets/js/my_bookings.js"></script>

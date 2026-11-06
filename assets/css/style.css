@@ -683,3 +683,37 @@ a.stat-card:hover {
   justify-content: center;
   padding: 32px 16px;
 }
+
+/* ---------- Warning message + white panel (tutor/student dashboards) ---------- */
+.message.warning {
+  color: #92400e;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+}
+
+.message.warning a {
+  color: #92400e;
+  font-weight: bold;
+}
+
+.panel {
+  padding: 16px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(30, 58, 138, 0.1);
+}
+
+.panel-link {
+  margin: 12px 0 0;
+  font-size: 14px;
+}
+
+.panel-link a {
+  color: var(--blue);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.panel-link a:hover {
+  text-decoration: underline;
+}

@@ -35,9 +35,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Profile | Home Tutor</title>
   <link rel="stylesheet" href="../assets/css/style.css">
+     <link rel="stylesheet" href="../assets/css/style.css?v=2">
 </head>
-<body>
+<body class="dashboard-page">
 
+  <?php $activePage = 'profile'; include '../includes/tutor_navbar.php'; ?>
+
+  <main class="page-center">
   <div class="auth-card wide">
     <h1>My profile</h1>
     <p class="subtitle">
@@ -90,6 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <a class="btn-outline" href="my_subjects.php">Manage subjects I teach</a>
   </div>
+  </main>
 
   <!-- Your JS goes here (create assets/js/profile.js) -->
   <script src="../assets/js/profile.js"></script>

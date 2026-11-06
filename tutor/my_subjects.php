@@ -49,9 +49,13 @@ $mySubjects = $myStmt->fetchAll();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Subjects | Home Tutor</title>
   <link rel="stylesheet" href="../assets/css/style.css">
+     <link rel="stylesheet" href="../assets/css/style.css?v=2">
 </head>
-<body>
+<body class="dashboard-page">
 
+  <?php $activePage = 'subjects'; include '../includes/tutor_navbar.php'; ?>
+
+  <main class="page-center">
   <div class="auth-card wide">
     <h1>My subjects</h1>
     <p class="subtitle">Choose the subjects you teach.</p>
@@ -91,6 +95,7 @@ $mySubjects = $myStmt->fetchAll();
 
     <a class="btn-outline" href="profile.php">Back to profile</a>
   </div>
+  </main>
 
   <!-- Your JS goes here (create assets/js/my_subjects.js) -->
   <script src="../assets/js/my_subjects.js"></script>
