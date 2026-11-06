@@ -44,32 +44,57 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $message = "Review submitted successfully!";
 }
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Give Review | Home Tutor</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
 
+  <div class="auth-card wide">
+    <h1>Review <?php echo htmlspecialchars($booking['tutor_name']); ?></h1>
+    <p class="subtitle">Tell other students how your lesson went.</p>
 
-<h2>Review for <?php echo htmlspecialchars($booking['tutor_name']); ?></h2>
-<h3><?php echo $message; ?></h3>
+    <?php if ($message): ?>
+      <div class="message success">
+        <?php echo htmlspecialchars($message); ?>
+      </div>
+    <?php else: ?>
 
+      <form method="POST" id="reviewForm" novalidate>
+        <input type="hidden" name="booking_id" value="<?php echo htmlspecialchars($bookingId); ?>">
 
-<?php if (!$message): ?>
-  <form method = "POST">
-    <input type="hidden" name="booking_id" value="<?php echo $bookingId; ?>">
+        <div class="form-group">
+          <label for="rating">Rating</label>
+          <select id="rating" name="rating" required>
+            <option value="1">1 - Poor</option>
+            <option value="2">2 - Fair</option>
+            <option value="3">3 - Good</option>
+            <option value="4">4 - Very good</option>
+            <option value="5">5 - Excellent</option>
+          </select>
+          <small class="error-text" id="ratingError"></small>
+        </div>
 
-    Rating:
-    <select name="rating" required>
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-      <option value="5">5</option>
-    </select><br><br>
+        <div class="form-group">
+          <label for="comment">Comment</label>
+          <textarea id="comment" name="comment" rows="4"
+                    placeholder="Share your experience..."></textarea>
+          <small class="error-text" id="commentError"></small>
+        </div>
 
-    Comment:<br>
-    <textarea name="comment" placeholder="Share your experience..."></textarea><br><br>
+        <button type="submit" class="btn">Submit review</button>
+      </form>
 
-    <button type="submit">Submit Review</button>
-  </form>
-<?php endif; ?>
+    <?php endif; ?>
 
+    <a class="btn-outline" href="my_bookings.php">Back to my bookings</a>
+  </div>
 
-<br>
-<a href="my_bookings.php">Back to My Bookings</a>
+  <!-- Your JS goes here (create assets/js/give_review.js) -->
+  <script src="../assets/js/give_review.js"></script>
+</body>
+</html>
