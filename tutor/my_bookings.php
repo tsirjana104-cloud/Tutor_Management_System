@@ -4,6 +4,10 @@ require_once '../includes/auth_check.php';
 require_once '../includes/notify_helper.php';
 requireRole('tutor'); // Only allow tutors to access this page
 
+// Lesson times are compared with the current time, so PHP needs the right timezone.
+// (Better: move this line into includes/config.php so every page uses it.)
+date_default_timezone_set('Asia/Kathmandu');
+
 $userId = $_SESSION['user_id'];
 
 // Get this tutor's tutor_profiles.id first
@@ -11,34 +15,49 @@ $stmt = $conn->prepare("SELECT id FROM tutor_profiles WHERE user_id = ?");
 $stmt->execute([$userId]);
 $tutorProfile = $stmt->fetch()['id'];
 
-// Handle accept/reject actions
+// Message shown when an action is blocked
+$error = '';
+if (isset($_GET['error']) && $_GET['error'] == 'too_early') {
+  $error = "You can only mark a lesson as completed after its scheduled date and time.";
+}
+
+// Handle accept/reject/complete actions
 if (isset($_GET['action']) && isset($_GET['booking_id'])) {
   $bookingId = $_GET['booking_id'];
-  $action = $_GET['action']; 
+  $action = $_GET['action'];
+  $redirect = "my_bookings.php";
 
-  if ($action === 'accept') {
-    $newStatus = 'accepted';
-  } elseif ($action === 'reject') {
-    $newStatus = 'rejected';
-  } elseif ($action === 'complete') {
-    $newStatus = 'completed';
-  } else {
+  // Load the booking, only if it belongs to this tutor (a tutor can't touch someone else's booking by guessing an id)
+  $infoStmt = $conn->prepare("SELECT student_id, status, preferred_date, preferred_time FROM booking_requests WHERE id = ? AND tutor_id = ?");
+  $infoStmt->execute([$bookingId, $tutorProfile]);
+  $info = $infoStmt->fetch();
+
+  if ($info) {
     $newStatus = null;
+
+    if ($action === 'accept' && $info['status'] === 'pending') {
+      $newStatus = 'accepted';
+    } elseif ($action === 'reject' && $info['status'] === 'pending') {
+      $newStatus = 'rejected';
+    } elseif ($action === 'complete' && $info['status'] === 'accepted') {
+      // A lesson can only be completed once its scheduled date and time has arrived
+      $lessonTime = strtotime($info['preferred_date'] . ' ' . $info['preferred_time']);
+      if ($lessonTime <= time()) {
+        $newStatus = 'completed';
+      } else {
+        $redirect = "my_bookings.php?error=too_early";
+      }
+    }
+
+    if ($newStatus) {
+      $updateStmt = $conn->prepare("UPDATE booking_requests SET status = ? WHERE id = ? AND tutor_id = ?");
+      $updateStmt->execute([$newStatus, $bookingId, $tutorProfile]);
+
+      createNotification($conn, $info['student_id'], "Your booking status was updated to: " . $newStatus);
+    }
   }
 
-  if ($newStatus) {
-    // check tutor_id matches, so a tutor can't update someone else's booking by just guessing a booking_id in the URL
-    $updateStmt = $conn->prepare("UPDATE booking_requests SET status = ? WHERE id = ? AND tutor_id = ?");
-    $updateStmt->execute([$newStatus, $bookingId, $tutorProfile]);
-
-    $bookingInfoStmt = $conn->prepare("SELECT student_id FROM booking_requests WHERE id = ?");
-    $bookingInfoStmt->execute([$bookingId]);
-    $studentId = $bookingInfoStmt->fetch()['student_id'];
-
-    createNotification($conn, $studentId, "Your booking status was updated to: " . $newStatus);
-  }
-
-  header("Location: my_bookings.php"); // Redirect to avoid resubmission
+  header("Location: " . $redirect); // Redirect to avoid resubmission
   exit();
 }
 
@@ -59,7 +78,6 @@ $bookings = $bookingStmt->fetchAll();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Bookings | Home Tutor</title>
   <link rel="stylesheet" href="../assets/css/style.css">
-     <link rel="stylesheet" href="../assets/css/style.css?v=2">
 </head>
 <body class="dashboard-page">
 
@@ -69,6 +87,12 @@ $bookings = $bookingStmt->fetchAll();
   <div class="auth-card widest">
     <h1>My booking requests</h1>
     <p class="subtitle">Accept or reject requests from students. Pending ones are listed first.</p>
+
+    <?php if ($error != ''): ?>
+      <div class="message error">
+        <?php echo htmlspecialchars($error); ?>
+      </div>
+    <?php endif; ?>
 
     <?php if (count($bookings) === 0): ?>
       <p class="empty-text">No booking requests found.</p>
@@ -101,7 +125,11 @@ $bookings = $bookingStmt->fetchAll();
           </thead>
           <tbody>
             <?php foreach ($bookings as $booking): ?>
-              <tr data-status="<?php echo htmlspecialchars($booking['status']); ?>">
+              <?php
+                $lessonTs = strtotime($booking['preferred_date'] . ' ' . $booking['preferred_time']);
+                $canComplete = $lessonTs <= time();
+              ?>
+              <tr data-status="<?php echo htmlspecialchars($booking['status']); ?>" data-lesson-time="<?php echo $lessonTs; ?>">
                 <td><?php echo htmlspecialchars($booking['student_name']); ?></td>
                 <td><?php echo htmlspecialchars($booking['student_phone']); ?></td>
                 <td><?php echo htmlspecialchars($booking['subject_name']); ?></td>
@@ -118,7 +146,12 @@ $bookings = $bookingStmt->fetchAll();
                     <a class="btn-small approve" href="?action=accept&booking_id=<?php echo $booking['id']; ?>">Accept</a>
                     <a class="btn-small reject" href="?action=reject&booking_id=<?php echo $booking['id']; ?>">Reject</a>
                   <?php elseif ($booking['status'] === 'accepted'): ?>
-                    <a class="btn-small approve" href="?action=complete&booking_id=<?php echo $booking['id']; ?>">Mark as completed</a>
+                    <?php if ($canComplete): ?>
+                      <a class="btn-small approve complete-link" href="?action=complete&booking_id=<?php echo $booking['id']; ?>">Mark as completed</a>
+                    <?php else: ?>
+                      <span class="btn-small disabled" title="Available after the lesson time">Mark as completed</span>
+                      <span class="muted-text block-text">Available after <?php echo date('d M, g:i A', $lessonTs); ?></span>
+                    <?php endif; ?>
                   <?php else: ?>
                     <span class="muted-text">N/A</span>
                   <?php endif; ?>

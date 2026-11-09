@@ -729,3 +729,16 @@ a.stat-card:hover {
   color: var(--blue-dark);
   font-weight: bold;
 }
+
+/* ---------- Disabled action button ---------- */
+.btn-small.disabled {
+  color: #94a3b8;
+  background: #e2e8f0;
+  cursor: not-allowed;
+}
+
+.block-text {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+}

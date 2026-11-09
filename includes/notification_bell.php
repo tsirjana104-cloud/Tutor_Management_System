@@ -35,9 +35,9 @@ $latestNotifications = $listStmt->fetchAll();
       <p class="bell-empty">No notifications yet.</p>
     <?php else: ?>
       <ul class="bell-list">
-        <?php foreach ($latestNotifications as $note): ?>
-          <li class="<?php echo $note['is_read'] ? '' : 'unread'; ?>">
-            <?php echo htmlspecialchars($note['message']); ?>
+        <?php foreach ($latestNotifications as $bellItem): ?>
+          <li class="<?php echo $bellItem['is_read'] ? '' : 'unread'; ?>">
+            <?php echo htmlspecialchars($bellItem['message']); ?>
           </li>
         <?php endforeach; ?>
       </ul>

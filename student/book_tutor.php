@@ -4,6 +4,10 @@ require_once '../includes/auth_check.php';
 require_once '../includes/notify_helper.php';
 requireRole('student'); // Only allow students to access this page
 
+// Needed so "today" and "now" match your local time
+// (Better: move this line into includes/config.php so every page uses it.)
+date_default_timezone_set('Asia/Kathmandu');
+
 $tutorProfileId = $_GET['tutor_id'] ?? ($_POST['tutor_id'] ?? null);
 
 if (!$tutorProfileId) {
@@ -38,6 +42,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   if ($date < date('Y-m-d')) {
     $message = "You cannot select a past date. Please choose today or a future date.";
     $messageType = "error";
+  } elseif (substr($time, 0, 5) < '10:00' || substr($time, 0, 5) > '17:00') {
+    // Lessons can only be booked between 10:00 AM and 5:00 PM
+    $message = "Please choose a time between 10:00 AM and 5:00 PM.";
+    $messageType = "error";
+  } elseif ($date == date('Y-m-d') && substr($time, 0, 5) <= date('H:i')) {
+    // Today is allowed, but not a time that has already passed
+    $message = "That time has already passed today. Please choose a later time.";
+    $messageType = "error";
   } else {
     // Insert booking request
   $insertStmt = $conn->prepare("INSERT INTO booking_requests (student_id, tutor_id, subject_id, preferred_date, preferred_time, message) VALUES (?, ?, ?, ?, ?, ?)");
@@ -62,7 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Book Tutor | Home Tutor</title>
   <link rel="stylesheet" href="../assets/css/style.css">
-     <link rel="stylesheet" href="../assets/css/style.css?v=2">
 </head>
 <body class="dashboard-page">
 
@@ -110,8 +121,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
           <div class="form-group">
             <label for="preferred_time">Preferred time</label>
-            <input type="time" id="preferred_time" name="preferred_time" min="09:00" max="18:00"
+            <input type="time" id="preferred_time" name="preferred_time" min="10:00" max="19:00"
                    value="<?php echo htmlspecialchars($time ?? ''); ?>" required>
+            <small class="muted-text block-text">Between 10:00 AM and 7:00 PM</small>
             <small class="error-text" id="timeError"></small>
           </div>
         </div>
