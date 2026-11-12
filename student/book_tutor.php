@@ -8,6 +8,20 @@ requireRole('student'); // Only allow students to access this page
 // (Better: move this line into includes/config.php so every page uses it.)
 date_default_timezone_set('Asia/Kathmandu');
 
+// Date and time slots this student has already booked with ANY tutor.
+// A student cannot be in two lessons at the same time, so the slot is blocked for every tutor.
+// Rejected requests do not count, so the slot is free again after a rejection.
+// Each slot looks like "2026-11-20 14:00".
+function getBookedSlots($conn, $studentId) {
+  $stmt = $conn->prepare("SELECT preferred_date, preferred_time FROM booking_requests WHERE student_id = ? AND status != 'rejected'");
+  $stmt->execute([$studentId]);
+  $slots = [];
+  foreach ($stmt->fetchAll() as $row) {
+    $slots[] = $row['preferred_date'] . ' ' . substr($row['preferred_time'], 0, 5);
+  }
+  return $slots;
+}
+
 $tutorProfileId = $_GET['tutor_id'] ?? ($_POST['tutor_id'] ?? null);
 
 if (!$tutorProfileId) {
@@ -42,13 +56,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   if ($date < date('Y-m-d')) {
     $message = "You cannot select a past date. Please choose today or a future date.";
     $messageType = "error";
-  } elseif (substr($time, 0, 5) < '10:00' || substr($time, 0, 5) > '19:00') {
+  } elseif (substr($time, 0, 5) < '10:00' || substr($time, 0, 5) > '17:00') {
     // Lessons can only be booked between 10:00 AM and 5:00 PM
-    $message = "Please choose a time between 10:00 AM and 7:00 PM.";
+    $message = "Please choose a time between 10:00 AM and 5:00 PM.";
     $messageType = "error";
   } elseif ($date == date('Y-m-d') && substr($time, 0, 5) <= date('H:i')) {
     // Today is allowed, but not a time that has already passed
     $message = "That time has already passed today. Please choose a later time.";
+    $messageType = "error";
+  } elseif (in_array($date . ' ' . substr($time, 0, 5), getBookedSlots($conn, $_SESSION['user_id']))) {
+    // The student already has a booking (with this or any other tutor) at that date and time
+    $message = "You already have a booking at that date and time. Please choose a different time.";
     $messageType = "error";
   } else {
     // Insert booking request
@@ -66,6 +84,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $date = $time = $note = ''; // clear the form after a successful booking
   }
 }
+
+// Slots this student already booked (with any tutor), handed to the page so the JS can warn before sending
+$bookedSlots = getBookedSlots($conn, $_SESSION['user_id']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -94,7 +115,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       <p class="empty-text">This tutor hasn't added any subjects yet, so they can't be booked right now.</p>
     <?php else: ?>
 
-      <form method="POST" id="bookingForm" novalidate>
+      <form method="POST" id="bookingForm" novalidate
+            data-booked="<?php echo htmlspecialchars(json_encode($bookedSlots)); ?>">
         <input type="hidden" name="tutor_id" value="<?php echo htmlspecialchars($tutorProfileId); ?>">
 
         <div class="form-group">
@@ -121,9 +143,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
           <div class="form-group">
             <label for="preferred_time">Preferred time</label>
-            <input type="time" id="preferred_time" name="preferred_time" min="10:00" max="19:00"
+            <input type="time" id="preferred_time" name="preferred_time" min="10:00" max="17:00"
                    value="<?php echo htmlspecialchars($time ?? ''); ?>" required>
-            <small class="muted-text block-text">Between 10:00 AM and 7:00 PM</small>
+            <small class="muted-text block-text">Between 10:00 AM and 5:00 PM</small>
             <small class="error-text" id="timeError"></small>
           </div>
         </div>

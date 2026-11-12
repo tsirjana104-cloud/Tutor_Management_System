@@ -18,6 +18,15 @@ document.addEventListener("DOMContentLoaded", function () {
     time: /^([01]\d|2[0-3]):[0-5]\d$/
   };
 
+  // ---------- Slots this student already booked, with ANY tutor ----------
+  // PHP puts them on the form as ["2026-11-20 14:00", ...]. Rejected requests are not in the list.
+  var bookedSlots = [];
+  try {
+    bookedSlots = JSON.parse(form.dataset.booked || "[]");
+  } catch (err) {
+    bookedSlots = [];
+  }
+
   // ---------- Fields and the ids of their error spots ----------
   var fields = {
     subject: document.getElementById("subject_id"),
@@ -91,6 +100,11 @@ document.addEventListener("DOMContentLoaded", function () {
       // If the lesson is today, the time must still be in the future
       if (fields.date.value === todayString() && value <= nowTimeString()) {
         return "That time has already passed today. Please choose a later time.";
+      }
+
+      // The student already has a booking (with this or any other tutor) at that date and time
+      if (bookedSlots.indexOf(fields.date.value + " " + value) !== -1) {
+        return "You already have a booking at that date and time. Please choose a different time.";
       }
       return "";
     },

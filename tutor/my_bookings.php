@@ -19,6 +19,8 @@ $tutorProfile = $stmt->fetch()['id'];
 $error = '';
 if (isset($_GET['error']) && $_GET['error'] == 'too_early') {
   $error = "You can only mark a lesson as completed after its scheduled date and time.";
+} elseif (isset($_GET['error']) && $_GET['error'] == 'slot_taken') {
+  $error = "You already have a lesson at that date and time. Reject this request or ask the student to choose another time.";
 }
 
 // Handle accept/reject/complete actions
@@ -36,7 +38,15 @@ if (isset($_GET['action']) && isset($_GET['booking_id'])) {
     $newStatus = null;
 
     if ($action === 'accept' && $info['status'] === 'pending') {
-      $newStatus = 'accepted';
+      // A tutor cannot accept two requests for the same date and time
+      $clashStmt = $conn->prepare("SELECT id FROM booking_requests WHERE tutor_id = ? AND preferred_date = ? AND preferred_time = ? AND status IN ('accepted', 'completed') AND id != ?");
+      $clashStmt->execute([$tutorProfile, $info['preferred_date'], $info['preferred_time'], $bookingId]);
+
+      if ($clashStmt->rowCount() > 0) {
+        $redirect = "my_bookings.php?error=slot_taken";
+      } else {
+        $newStatus = 'accepted';
+      }
     } elseif ($action === 'reject' && $info['status'] === 'pending') {
       $newStatus = 'rejected';
     } elseif ($action === 'complete' && $info['status'] === 'accepted') {
@@ -70,6 +80,14 @@ WHERE br.tutor_id = ?
 ORDER BY br.status = 'pending' DESC, br.preferred_date ASC");
 $bookingStmt->execute([$tutorProfile]);
 $bookings = $bookingStmt->fetchAll();
+
+// Slots (date + time) where this tutor already has an accepted or completed lesson, like "2026-11-20 14:00"
+$takenSlots = [];
+foreach ($bookings as $b) {
+  if ($b['status'] === 'accepted' || $b['status'] === 'completed') {
+    $takenSlots[] = $b['preferred_date'] . ' ' . substr($b['preferred_time'], 0, 5);
+  }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -78,6 +96,7 @@ $bookings = $bookingStmt->fetchAll();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Bookings | Home Tutor</title>
   <link rel="stylesheet" href="../assets/css/style.css">
+     <link rel="stylesheet" href="../assets/css/style.css?v=2">
 </head>
 <body class="dashboard-page">
 
@@ -128,6 +147,7 @@ $bookings = $bookingStmt->fetchAll();
               <?php
                 $lessonTs = strtotime($booking['preferred_date'] . ' ' . $booking['preferred_time']);
                 $canComplete = $lessonTs <= time();
+                $slotTaken = in_array($booking['preferred_date'] . ' ' . substr($booking['preferred_time'], 0, 5), $takenSlots);
               ?>
               <tr data-status="<?php echo htmlspecialchars($booking['status']); ?>" data-lesson-time="<?php echo $lessonTs; ?>">
                 <td><?php echo htmlspecialchars($booking['student_name']); ?></td>
@@ -143,8 +163,15 @@ $bookings = $bookingStmt->fetchAll();
                 </td>
                 <td>
                   <?php if ($booking['status'] === 'pending'): ?>
-                    <a class="btn-small approve" href="?action=accept&booking_id=<?php echo $booking['id']; ?>">Accept</a>
+                    <?php if ($slotTaken): ?>
+                      <span class="btn-small disabled" title="You already have a lesson at this time">Accept</span>
+                    <?php else: ?>
+                      <a class="btn-small approve" href="?action=accept&booking_id=<?php echo $booking['id']; ?>">Accept</a>
+                    <?php endif; ?>
                     <a class="btn-small reject" href="?action=reject&booking_id=<?php echo $booking['id']; ?>">Reject</a>
+                    <?php if ($slotTaken): ?>
+                      <span class="muted-text block-text">You already have a lesson at this time</span>
+                    <?php endif; ?>
                   <?php elseif ($booking['status'] === 'accepted'): ?>
                     <?php if ($canComplete): ?>
                       <a class="btn-small approve complete-link" href="?action=complete&booking_id=<?php echo $booking['id']; ?>">Mark as completed</a>
