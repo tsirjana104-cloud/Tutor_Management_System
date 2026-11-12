@@ -42,9 +42,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   if ($date < date('Y-m-d')) {
     $message = "You cannot select a past date. Please choose today or a future date.";
     $messageType = "error";
-  } elseif (substr($time, 0, 5) < '10:00' || substr($time, 0, 5) > '17:00') {
+  } elseif (substr($time, 0, 5) < '10:00' || substr($time, 0, 5) > '19:00') {
     // Lessons can only be booked between 10:00 AM and 5:00 PM
-    $message = "Please choose a time between 10:00 AM and 5:00 PM.";
+    $message = "Please choose a time between 10:00 AM and 7:00 PM.";
     $messageType = "error";
   } elseif ($date == date('Y-m-d') && substr($time, 0, 5) <= date('H:i')) {
     // Today is allowed, but not a time that has already passed

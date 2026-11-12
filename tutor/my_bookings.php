@@ -149,7 +149,7 @@ $bookings = $bookingStmt->fetchAll();
                     <?php if ($canComplete): ?>
                       <a class="btn-small approve complete-link" href="?action=complete&booking_id=<?php echo $booking['id']; ?>">Mark as completed</a>
                     <?php else: ?>
-                      <span class="btn-small disabled" title="Available after the lesson time">Mark as completed</span>
+                      <span class="btn-small disabled" title="Available after the lesson time" data-href="?action=complete&booking_id=<?php echo $booking['id']; ?>">Mark as completed</span>
                       <span class="muted-text block-text">Available after <?php echo date('d M, g:i A', $lessonTs); ?></span>
                     <?php endif; ?>
                   <?php else: ?>
@@ -167,6 +167,7 @@ $bookings = $bookingStmt->fetchAll();
   </main>
 
   <!-- Your JS goes here (create assets/js/my_bookings.js) -->
+  <script src="../assets/js/confirm_modal.js"></script>
   <script src="../assets/js/my_bookings.js"></script>
 </body>
 </html>

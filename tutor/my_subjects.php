@@ -49,7 +49,6 @@ $mySubjects = $myStmt->fetchAll();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Subjects | Home Tutor</title>
   <link rel="stylesheet" href="../assets/css/style.css">
-     <link rel="stylesheet" href="../assets/css/style.css?v=2">
 </head>
 <body class="dashboard-page">
 
@@ -86,8 +85,7 @@ $mySubjects = $myStmt->fetchAll();
           <li>
             <span class="item-name"><?php echo htmlspecialchars($subject['name']); ?></span>
             <a class="btn-small reject remove-link"
-               href="?remove=<?php echo $subject['tutor_subject_id']; ?>"
-               onclick="return confirm('Are you sure you want to remove this subject?');">Remove</a>
+               href="?remove=<?php echo $subject['tutor_subject_id']; ?>">Remove</a>
           </li>
         <?php endforeach; ?>
       </ul>
@@ -98,6 +96,7 @@ $mySubjects = $myStmt->fetchAll();
   </main>
 
   <!-- Your JS goes here (create assets/js/my_subjects.js) -->
+  <script src="../assets/js/confirm_modal.js"></script>
   <script src="../assets/js/my_subjects.js"></script>
 </body>
 </html>

@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" id="password" name="password" placeholder="At least 6 characters" required>
+        <input type="password" id="password" name="password" placeholder="6+ characters, with a letter and a number" required>
         <small class="error-text" id="passwordError"></small>
       </div>
 
@@ -101,6 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <label for="location">Location</label>
         <input type="text" id="location" name="location" placeholder="City or area"
                value="<?php echo htmlspecialchars($location ?? ''); ?>">
+        <small class="error-text" id="locationError"></small>
       </div>
 
       <div class="form-group">

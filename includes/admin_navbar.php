@@ -18,3 +18,4 @@ $activePage = $activePage ?? '';
     <a href="../auth/logout.php" class="logout-link">Logout</a>
   </div>
 </header>
+<script src="../assets/js/dashboard.js"></script>

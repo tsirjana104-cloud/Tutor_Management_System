@@ -99,6 +99,7 @@ $tutors = $stmt->fetchAll();
   </main>
 
   <!-- Your JS goes here (create assets/js/manage_tutors.js) -->
+  <script src="../assets/js/confirm_modal.js"></script>
   <script src="../assets/js/manage_tutors.js"></script>
 </body>
 </html>

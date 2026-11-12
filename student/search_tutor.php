@@ -38,7 +38,7 @@ $allSubjects = $conn->query("SELECT * FROM subjects ORDER BY name")->fetchAll();
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Search Tutors | Home Tutor</title>
+  <title>Search Tutor | Home Tutor</title>
   <link rel="stylesheet" href="../assets/css/style.css">
      <link rel="stylesheet" href="../assets/css/style.css?v=2">
 </head>
@@ -72,7 +72,7 @@ $allSubjects = $conn->query("SELECT * FROM subjects ORDER BY name")->fetchAll();
 
       <div class="form-group filter-buttons">
         <button type="submit" class="btn">Search</button>
-        <a href="search_tutors.php" class="btn-outline" id="clearFilters">Clear</a>
+        <a href="search_tutor.php" class="btn-outline" id="clearFilters">Clear</a>
       </div>
     </form>
 
