@@ -7,6 +7,10 @@ document.addEventListener("DOMContentLoaded", function () {
   var errorBox = document.getElementById("nameError");
   var list = document.getElementById("subjectList"); // does not exist when there are no subjects yet
 
+  // Update mode: PHP adds a hidden "subject_id" field and the saved name (data-original) to the form
+  var idInput = form.querySelector("input[name='subject_id']");
+  var editing = idInput !== null;
+
   // ---------- Regular expression ----------
   // 2 to 50 characters, must start with a letter.
   // Allowed: letters, numbers, spaces and & . + ( ) ' -   (for names like "Computer Science", "C++", "Math & Stats")
@@ -17,12 +21,14 @@ document.addEventListener("DOMContentLoaded", function () {
     return value.trim().replace(/\s+/g, " ");
   }
 
-  // Read the subjects already on the page, in lower case, so we can warn about duplicates
+  // Read the subjects already on the page, in lower case, so we can warn about duplicates.
+  // In update mode the subject being edited is skipped, so it does not clash with itself.
   function existingSubjects() {
     var names = [];
     if (!list) return names;
-    list.querySelectorAll(".item-name").forEach(function (item) {
-      names.push(clean(item.textContent).toLowerCase());
+    list.querySelectorAll("li").forEach(function (item) {
+      if (editing && item.dataset.id === idInput.value) return;
+      names.push(clean(item.querySelector(".item-name").textContent).toLowerCase());
     });
     return names;
   }
@@ -38,7 +44,10 @@ document.addEventListener("DOMContentLoaded", function () {
       return "Start with a letter. Use only letters, numbers, spaces and & . + ( ) ' -";
     }
     if (existingSubjects().indexOf(value.toLowerCase()) !== -1) {
-      return "This subject already exists.";
+      return editing ? "Another subject already has this name." : "This subject already exists.";
+    }
+    if (editing && value === clean(input.dataset.original || "")) {
+      return "The name is unchanged. Edit it, or press Cancel.";
     }
     return "";
   }
@@ -68,6 +77,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  // Update mode: put the cursor in the box with the old name selected, ready to be retyped
+  if (editing) {
+    input.focus();
+    input.select();
+  }
+
   // ---------- On submit ----------
   form.addEventListener("submit", function (e) {
     if (!checkField()) {
@@ -82,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var button = form.querySelector("button[type='submit']");
     if (button) {
       button.disabled = true;
-      button.textContent = "Adding...";
+      button.textContent = editing ? "Updating..." : "Adding...";
     }
   });
 });

@@ -15,7 +15,7 @@ $activePage = $activePage ?? '';
 
   <div class="topbar-right">
     <?php include '../includes/notification_bell.php'; ?>
-    <span class="user-name"><?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
+    <?php include '../includes/user_menu.php'; ?>
     <a href="../auth/logout.php" class="logout-link">Logout</a>
   </div>
 </header>

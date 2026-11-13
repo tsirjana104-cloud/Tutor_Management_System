@@ -85,7 +85,7 @@ $recentBookings = $recentStmt->fetchAll();
     <div class="panel">
       <?php if (count($recentBookings) == 0): ?>
         <p class="empty-text">You haven't booked any tutors yet.</p>
-        <p class="panel-link"><a href="search_tutor.php">Find your first tutor</a></p>
+        <p class="panel-link"><a href="search_tutors.php">Find your first tutor</a></p>
       <?php else: ?>
         <div class="table-wrap">
           <table class="data-table" id="recentTable">

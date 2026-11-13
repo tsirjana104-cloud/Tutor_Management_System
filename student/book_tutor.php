@@ -29,12 +29,17 @@ if (!$tutorProfileId) {
 }
 
 // Get tutor's basic info
-$tutorStmt = $conn->prepare("SELECT tp.id, u.name FROM tutor_profiles tp JOIN users u ON tp.user_id = u.id WHERE tp.id = ?");
+// Only approved tutors with a filled-in profile can be booked (the same rule as the search list)
+$tutorStmt = $conn->prepare("SELECT tp.id, u.name FROM tutor_profiles tp JOIN users u ON tp.user_id = u.id
+  WHERE tp.id = ? AND tp.status = 'approved'
+    AND tp.bio IS NOT NULL AND tp.bio != ''
+          AND tp.qualification IS NOT NULL AND tp.qualification != ''
+          AND tp.hourly_rate IS NOT NULL AND tp.hourly_rate > 0");
 $tutorStmt->execute([$tutorProfileId]);
 $tutor = $tutorStmt->fetch();
 
 if (!$tutor) {
-  die("Tutor not found.");
+  die("Tutor not found or not available for booking.");
 }
 
 // Get subjects this tutor teaches (Only let student pick from these)
@@ -162,7 +167,7 @@ $bookedSlots = getBookedSlots($conn, $_SESSION['user_id']);
 
     <?php endif; ?>
 
-    <a class="btn-outline" href="search_tutors.php">Back to search</a>
+    <a class="btn-outline" href="search_tutor.php">Back to search</a>
   </div>
   </main>
 

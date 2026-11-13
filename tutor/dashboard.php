@@ -42,7 +42,8 @@ $recentStmt->execute([$tutorId]);
 $recentBookings = $recentStmt->fetchAll();
 
 // Is the profile still incomplete?
-$profileIncomplete = empty($tutor['bio']) || empty($tutor['qualification']) || empty($tutor['hourly_rate']);
+// Same rule the student search uses: bio, qualification and an hourly rate above 0
+$profileIncomplete = empty($tutor['bio']) || empty($tutor['qualification']) || (float) $tutor['hourly_rate'] <= 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -51,7 +52,6 @@ $profileIncomplete = empty($tutor['bio']) || empty($tutor['qualification']) || e
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tutor Dashboard | Home Tutor</title>
   <link rel="stylesheet" href="../assets/css/style.css">
-     <link rel="stylesheet" href="../assets/css/style.css?v=2">
 </head>
 <body class="dashboard-page">
 
@@ -78,7 +78,7 @@ $profileIncomplete = empty($tutor['bio']) || empty($tutor['qualification']) || e
 
     <?php if ($profileIncomplete): ?>
       <div class="message warning">
-        Your profile is incomplete. <a href="profile.php">Complete your profile</a> so students know more about you.
+        Your profile is incomplete, so students cannot find you yet. <a href="profile.php">Complete your profile</a> (bio, qualification and hourly rate) to appear in searches.
       </div>
     <?php endif; ?>
 

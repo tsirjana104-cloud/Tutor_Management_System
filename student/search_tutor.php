@@ -6,12 +6,15 @@ requireRole('student'); // Only allow students to access this page
 $subjectFilter = $_GET['subject_id'] ?? '';
 $locationFilter = $_GET['location'] ?? '';
 
-// Base query: only approved tutors
+// Base query: only approved tutors who have filled in their profile (bio, qualification and an hourly rate)
 $sql = "SELECT DISTINCT tp.id as tutor_profile_id, u.name, u.email, u.location, tp.qualification, tp.experience_years, tp.hourly_rate
         FROM tutor_profiles tp
         JOIN users u ON tp.user_id = u.id
         LEFT JOIN tutor_subjects ts ON tp.id = ts.tutor_id
-        WHERE tp.status = 'approved'";
+        WHERE tp.status = 'approved'
+          AND tp.bio IS NOT NULL AND tp.bio != ''
+          AND tp.qualification IS NOT NULL AND tp.qualification != ''
+          AND tp.hourly_rate IS NOT NULL AND tp.hourly_rate > 0";
 
 $params = [];
 
@@ -38,9 +41,8 @@ $allSubjects = $conn->query("SELECT * FROM subjects ORDER BY name")->fetchAll();
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Search Tutor | Home Tutor</title>
+  <title>Search Tutors | Home Tutor</title>
   <link rel="stylesheet" href="../assets/css/style.css">
-     <link rel="stylesheet" href="../assets/css/style.css?v=2">
 </head>
 <body class="dashboard-page">
 
@@ -72,7 +74,7 @@ $allSubjects = $conn->query("SELECT * FROM subjects ORDER BY name")->fetchAll();
 
       <div class="form-group filter-buttons">
         <button type="submit" class="btn">Search</button>
-        <a href="search_tutor.php" class="btn-outline" id="clearFilters">Clear</a>
+        <a href="search_tutors.php" class="btn-outline" id="clearFilters">Clear</a>
       </div>
     </form>
 
@@ -114,6 +116,6 @@ $allSubjects = $conn->query("SELECT * FROM subjects ORDER BY name")->fetchAll();
   </main>
 
   <!-- Your JS goes here (create assets/js/search_tutors.js) -->
-  <script src="../assets/js/search_tutors.js"></script>
+  <script src="../assets/js/search_tutor.js"></script>
 </body>
 </html>

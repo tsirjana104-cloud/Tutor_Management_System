@@ -1,5 +1,5 @@
 // dashboard.js - shared by the admin, tutor and student pages.
-// 1. Closes the notification bell when you click outside it or press Escape
+// 1. Closes the notification bell and the user menu when you click outside them or press Escape
 // 2. Counts the dashboard numbers up from 0 when the page loads
 //
 // The three top bar files (admin_navbar.php, tutor_navbar.php, student_navbar.php) load this file,
@@ -11,28 +11,44 @@
   window.dashboardJsLoaded = true;
 
   document.addEventListener("DOMContentLoaded", function () {
-    // ---------- Notification bell ----------
-    // The bell is an HTML <details> element, so it already opens and closes when you click it.
-    // This adds the two things <details> does not do by itself.
-    var bell = document.getElementById("notificationBell");
+    // ---------- Dropdowns: notification bell and user menu ----------
+    // Both are HTML <details> elements, so they already open and close when you click them.
+    // This adds the things <details> does not do by itself.
+    var menus = [
+      document.getElementById("notificationBell"),
+      document.getElementById("userMenu")
+    ].filter(Boolean); // keep only the ones that exist on this page
 
-    if (bell) {
-      // Click anywhere outside the bell: close it
-      document.addEventListener("click", function (e) {
-        if (bell.open && !bell.contains(e.target)) {
-          bell.open = false;
+    // Click anywhere outside an open dropdown: close it
+    document.addEventListener("click", function (e) {
+      menus.forEach(function (menu) {
+        if (menu.open && !menu.contains(e.target)) {
+          menu.open = false;
         }
       });
+    });
 
-      // Escape key: close it and give the focus back to the bell icon
-      document.addEventListener("keydown", function (e) {
-        if (e.key === "Escape" && bell.open) {
-          bell.open = false;
-          var icon = bell.querySelector("summary");
-          if (icon) icon.focus();
+    // Escape key: close the open dropdown and give the focus back to its button
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "Escape") return;
+      menus.forEach(function (menu) {
+        if (menu.open) {
+          menu.open = false;
+          var button = menu.querySelector("summary");
+          if (button) button.focus();
         }
       });
-    }
+    });
+
+    // Opening one dropdown closes the other, so they never overlap
+    menus.forEach(function (menu) {
+      menu.addEventListener("toggle", function () {
+        if (!menu.open) return;
+        menus.forEach(function (other) {
+          if (other !== menu) other.open = false;
+        });
+      });
+    });
 
     // ---------- Count-up animation for the stat cards ----------
     var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
